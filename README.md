@@ -29,11 +29,10 @@ set_target_properties(Qt5Core
 target_link_libraries(${APP_NAME} Qt5Core)
 ```
 
-编译完成，
-
 ## 启动
 
 * 安装 VS Code 插件 `CMake`，`CMake Tools`，`C/C++`
 * Ctrl+Shift+P 并选择 `CMake: Configure`
-* 点击状态栏的 Build 选项
+* 将 Main/CMakeLists.txt 中 `set(CMAKE_PREFIX_PATH, ...)` 的 `...` 修改为 qt 的安装路径
+* 选择 `live2d` 进行构建
 
