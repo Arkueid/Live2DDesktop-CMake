@@ -12,7 +12,7 @@
 #include <iostream>
 #include <fstream>
 #include <GL/glew.h>
-#include <GLFW/glfw3.h>
+// #include <GLFW/glfw3.h>
 #include <Model/CubismMoc.hpp>
 #include "LAppDefine.hpp"
 #include <chrono>
