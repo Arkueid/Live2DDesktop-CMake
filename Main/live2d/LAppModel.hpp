@@ -14,6 +14,7 @@
 #include <Rendering/OpenGL/CubismOffscreenSurface_OpenGLES2.hpp>
 
 #include "LAppWavFileHandler.hpp"
+#include "LAppTextureManager.hpp"
 
 /**
  * @brief ユーザーが実際に使用するモデルの実装クラス<br>
@@ -192,6 +193,7 @@ private:
     const Csm::CubismId* _idParamEyeBallY; ///< パラメータID: ParamEyeBallXY
 
     LAppWavFileHandler _wavFileHandler; ///< wavファイルハンドラ
+    LAppTextureManager _textureManager; ///< 纹理管理器
 
     Csm::Rendering::CubismOffscreenSurface_OpenGLES2  _renderBuffer;   ///< フレームバッファ以外の描画先
 };

@@ -1,1 +1,17 @@
 build
+
+Main/unused
+
+thirdParty/glew/*
+!thirdParty/glew/.gitkeep
+!thirdParty/glew/README.md
+!thirdParty/glew/LICENSE.md
+
+thirdParty/glfw/*
+!thirdParty/glfw/.gitkeep
+!thirdParty/glfw/README.md
+!thirdParty/glfw/LICENSE.md
+
+thirdParty/stb/*
+!thirdParty/stb/.gitkeep
+!thirdParty/stb/README.md

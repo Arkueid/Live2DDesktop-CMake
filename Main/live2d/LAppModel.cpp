@@ -19,7 +19,6 @@
 #include "LAppDefine.hpp"
 #include "LAppPal.hpp"
 #include "LAppTextureManager.hpp"
-#include "LAppDelegate.hpp"
 
 using namespace Live2D::Cubism::Framework;
 using namespace Live2D::Cubism::Framework::DefaultParameterId;
@@ -637,7 +636,7 @@ void LAppModel::SetupTextures()
         csmString texturePath = _modelSetting->GetTextureFileName(modelTextureNumber);
         texturePath = _modelHomeDir + texturePath;
 
-        LAppTextureManager::TextureInfo* texture = LAppDelegate::GetInstance()->GetTextureManager()->CreateTextureFromPngFile(texturePath.GetRawString());
+        LAppTextureManager::TextureInfo* texture =  _textureManager.CreateTextureFromPngFile(texturePath.GetRawString());
         const csmInt32 glTextueNumber = texture->id;
 
         //OpenGL

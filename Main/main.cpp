@@ -1,18 +1,17 @@
-#include <stb_image.h>
 #include <GL/glew.h>  // 尽量放在开头
+#include <stb_image.h>
 #include "LAppDefine.hpp"
 #include "LAppAllocator.hpp"
 #include "LAppTextureManager.hpp"
 #include "LAppPal.hpp"
+#include "LAppModel.hpp"
 #include "TouchManager.hpp"
-#include "CubismUserModelExtend.hpp"
 #include "CubismSampleViewMatrix.hpp"
 #include "MouseActionManager.hpp"
 
 #include <CubismFramework.hpp>
 #include <CubismDefaultParameterId.hpp>
 #include <CubismModelSettingJson.hpp>
-#include <Model/CubismUserModel.hpp>
 #include <Physics/CubismPhysics.hpp>
 #include <Rendering/OpenGL/CubismRenderer_OpenGLES2.hpp>
 #include <Utils/CubismString.hpp>
@@ -22,23 +21,30 @@
 #include <QtWidgets/qapplication.h>
 #include <QtWidgets/qopenglwidget.h> 
 
+#include <model/impl/ModelManager.hpp>
+
 static const Csm::csmChar *_modelDirectoryName = "Hiyori";
 
-static Csm::CubismUserModel *_userModel; ///< ユーザーが実際に使用するモデル
+static LAppModel *_userModel; ///< ユーザーが実際に使用するモデル
 
 static Csm::CubismFramework::Option _cubismOption; ///< CubismFrameworkに関するオプション
 static LAppAllocator _cubismAllocator;             ///< メモリのアロケーター
 
-static LAppTextureManager *_textureManager; ///< テクスチャの管理
-
 static std::string _currentModelDirectory;      ///< 現在のモデルのディレクトリ名
-const Csm::csmChar *_currentModelDirectoryChar; ///< 現在のモデルのディレクトリ名のconst csmCharポインタ型
 
 int windowWidth = 500, windowHeight = 400; ///< ウィンドウサイズの保存
+
+IModelManager *modelManager = nullptr; 
 
 class GLWin : public QOpenGLWidget
 {
 public:
+    GLWin()
+    {
+        setWindowFlags(Qt::FramelessWindowHint);  // 无边框
+        setAttribute(Qt::WA_TranslucentBackground, true);  // 透明背景
+        setAttribute(Qt::WA_AlwaysStackOnTop, true);  // 置于最上层
+    }
     ~GLWin()
     {
         Release();
@@ -66,9 +72,13 @@ protected:
         // Cubism SDK の初期化
         InitializeCubism();
 
-        MouseActionManager::GetInstance()->Initialize(windowWidth, windowHeight);
+        // MouseActionManager::GetInstance()->Initialize(windowWidth, windowHeight);
 
-        LoadModel(_modelDirectoryName);
+        modelManager = new ModelManager();
+
+        modelManager->LoadModel(_modelDirectoryName);
+
+        _userModel = modelManager->GetCurrentModel();
 
         startTimer(1000 / 60);
     }
@@ -94,7 +104,7 @@ protected:
 
         if ((windowWidth != w || windowHeight != h) && w > 0 && h > 0)
         {
-            MouseActionManager::GetInstance()->ViewInitialize(w, h);
+            // MouseActionManager::GetInstance()->ViewInitialize(w, h);
             // サイズを保存しておく
             windowWidth = w;
             windowHeight = h;
@@ -105,16 +115,14 @@ protected:
     }
     void UpdateModel()
     {
-        CubismUserModelExtend *model = static_cast<CubismUserModelExtend *>(_userModel);
-
         Csm::CubismMatrix44 projection;
         // 念のため単位行列に初期化
         projection.LoadIdentity();
 
-        if (model->GetModel()->GetCanvasWidth() > 1.0f && width() < height())
+        if (_userModel->GetModel()->GetCanvasWidth() > 1.0f && width() < height())
         {
             // 横に長いモデルを縦長ウィンドウに表示する際モデルの横サイズでscaleを算出する
-            model->GetModelMatrix()->SetWidth(2.0f);
+            _userModel->GetModelMatrix()->SetWidth(2.0f);
             projection.Scale(1.0f, static_cast<float>(width()) / static_cast<float>(height()));
         }
         else
@@ -123,21 +131,14 @@ protected:
         }
 
         // 以下两个函数访问权需要从 private 变为 public 
-        model->ModelParamUpdate();
-        model->Draw(projection); 
+        _userModel->Update();
+        _userModel->Draw(projection); 
     }
     void Release()
     {
-        // レンダラの解放
-        _userModel->DeleteRenderer();
+        delete modelManager;
 
-        // モデルデータの解放
-        delete _userModel;
-
-        // テクスチャマネージャーの解放
-        delete _textureManager;
-
-        MouseActionManager::ReleaseInstance();
+        // MouseActionManager::ReleaseInstance();
 
         // Cubism SDK の解放
         Csm::CubismFramework::Dispose();
@@ -150,16 +151,7 @@ protected:
 
     void LoadModel(const std::string modelDirectoryName)
     {
-        // モデルのディレクトリを指定
-        SetAssetDirectory(LAppDefine::ResourcesPath + modelDirectoryName + "/");
-
-        // モデルデータの新規生成
-        _userModel = new CubismUserModelExtend(modelDirectoryName, _currentModelDirectory);
-
-        // モデルデータの読み込み及び生成とセットアップを行う
-        static_cast<CubismUserModelExtend *>(_userModel)->SetupModel();
-
-        MouseActionManager::GetInstance()->SetUserModel(_userModel);
+        
     }
 
 private:
