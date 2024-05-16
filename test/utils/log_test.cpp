@@ -3,11 +3,11 @@
 
 int main()
 {
-    Debug("debug msg");
-    Info("info msg");
-    Info("info msg", "info.log");
-    Error("error msg");
-    Error("error msg", "error.log");
-    Debug2File("wow","WWO.log");
+    Debug("debug msg %d %d", 1111, 2222);
+    _DebugF("debug.log", "debug msg %d %d", __BASE_FILE__, __LINE__, 1111, 2222);
+    Info("info msg %d %d", 1111, 2222);
+    InfoF("info.log", "info msg %d %d", 1111, 2222);
+    Error("error msg %d %d", 1111, 2222);
+    ErrorF("error.log", "error msg %d %d", 1111, 2222);
     return 0;
 }

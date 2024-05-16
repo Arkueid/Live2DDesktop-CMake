@@ -7,6 +7,8 @@
 
 #include <Default.hpp>
 
+#include <utils/Log.hpp>
+
 static Config* _instance = nullptr;
 
 void Config::Initialize()
@@ -16,7 +18,7 @@ void Config::Initialize()
     file.open(APP_CONFIG_PATH);
     if (!file.is_open())
     {
-
+        Error("config file read error");
     }
 }
 
