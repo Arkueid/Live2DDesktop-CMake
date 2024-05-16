@@ -1,4 +1,4 @@
-#include <GL/glew.h>  // 尽量放在开头
+#include <GL/glew.h> // 尽量放在开头
 #include <stb_image.h>
 #include "LAppDefine.hpp"
 #include "LAppAllocator.hpp"
@@ -19,7 +19,7 @@
 
 #include <QtWidgets/qapplication.h>
 #include <QtWidgets/qapplication.h>
-#include <QtWidgets/qopenglwidget.h> 
+#include <QtWidgets/qopenglwidget.h>
 
 #include <model/impl/ModelManager.hpp>
 
@@ -30,25 +30,26 @@ static LAppModel *_userModel; ///< ユーザーが実際に使用するモデル
 static Csm::CubismFramework::Option _cubismOption; ///< CubismFrameworkに関するオプション
 static LAppAllocator _cubismAllocator;             ///< メモリのアロケーター
 
-static std::string _currentModelDirectory;      ///< 現在のモデルのディレクトリ名
+static std::string _currentModelDirectory; ///< 現在のモデルのディレクトリ名
 
 int windowWidth = 500, windowHeight = 400; ///< ウィンドウサイズの保存
 
-IModelManager *modelManager = nullptr; 
+IModelManager *modelManager = nullptr;
 
 class GLWin : public QOpenGLWidget
 {
 public:
     GLWin()
     {
-        setWindowFlags(Qt::FramelessWindowHint);  // 无边框
-        setAttribute(Qt::WA_TranslucentBackground, true);  // 透明背景
-        setAttribute(Qt::WA_AlwaysStackOnTop, true);  // 置于最上层
+        setWindowFlags(Qt::FramelessWindowHint);          // 无边框
+        setAttribute(Qt::WA_TranslucentBackground, true); // 透明背景
+        setAttribute(Qt::WA_AlwaysStackOnTop, true);      // 置于最上层
     }
     ~GLWin()
     {
         Release();
     }
+
 protected:
     void initializeGL()
     {
@@ -74,11 +75,13 @@ protected:
 
         // MouseActionManager::GetInstance()->Initialize(windowWidth, windowHeight);
 
-        modelManager = new ModelManager();
+        // <live2d>
+        modelManager = ModelManager::GetInstance();
 
-        modelManager->LoadModel(_modelDirectoryName);
+        modelManager->SetModel(_modelDirectoryName);
 
-        _userModel = modelManager->GetCurrentModel();
+        _userModel = modelManager->GetModel();
+        // <live2d>
 
         startTimer(1000 / 60);
     }
@@ -96,7 +99,7 @@ protected:
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glClearDepth(1.0);
 
-        UpdateModel();
+        modelManager->UpdateModel(width(), height());
     }
     void resizeGL(int w, int h)
     {
@@ -112,27 +115,6 @@ protected:
             // ビューポート変更
             glViewport(0, 0, w, h);
         }
-    }
-    void UpdateModel()
-    {
-        Csm::CubismMatrix44 projection;
-        // 念のため単位行列に初期化
-        projection.LoadIdentity();
-
-        if (_userModel->GetModel()->GetCanvasWidth() > 1.0f && width() < height())
-        {
-            // 横に長いモデルを縦長ウィンドウに表示する際モデルの横サイズでscaleを算出する
-            _userModel->GetModelMatrix()->SetWidth(2.0f);
-            projection.Scale(1.0f, static_cast<float>(width()) / static_cast<float>(height()));
-        }
-        else
-        {
-            projection.Scale(static_cast<float>(height()) / static_cast<float>(width()), 1.0f);
-        }
-
-        // 以下两个函数访问权需要从 private 变为 public 
-        _userModel->Update();
-        _userModel->Draw(projection); 
     }
     void Release()
     {
@@ -151,7 +133,6 @@ protected:
 
     void LoadModel(const std::string modelDirectoryName)
     {
-        
     }
 
 private:
@@ -163,7 +144,6 @@ private:
         Csm::CubismFramework::Initialize();
     }
 };
-
 
 int main(int argc, char *argv[])
 {

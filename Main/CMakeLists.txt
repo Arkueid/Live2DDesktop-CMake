@@ -70,6 +70,7 @@ find_package(OpenGL REQUIRED)
 # Make executable app.
 add_executable(${APP_NAME} 
   main.cpp
+  AppConfig.cpp
 )
 
 # Add source files.
