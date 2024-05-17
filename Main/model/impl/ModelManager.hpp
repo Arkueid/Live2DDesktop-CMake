@@ -1,17 +1,18 @@
 #include <model/IModelManager.hpp>
 
-class ModelManager: public IModelManager
+class ModelManager : public IModelManager
 {
 public:
-    static IModelManager* GetInstance();
-    static void ReleaseInstance();
+    ModelManager();
+    
+    ~ModelManager();
 
-    LAppModel * GetModel();
+    LAppModel *GetModel();
 
     void SetModel(const char *modelDir);
 
     void UpdateModel(int winWidth, int winHeight);
+
 private:
-    ModelManager();
-    ~ModelManager();
+    LAppModel *_currentModel;
 };

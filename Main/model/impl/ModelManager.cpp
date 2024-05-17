@@ -2,30 +2,8 @@
 #include <Config.hpp>
 #include <assert.h>
 
-static LAppModel *_currentModel = nullptr;
-
-static IModelManager *_instance = nullptr;
-
-ModelManager::ModelManager()
+ModelManager::ModelManager(): _currentModel(nullptr)
 {
-}
-
-IModelManager *ModelManager::GetInstance()
-{
-    if (_instance == nullptr)
-    {
-        _instance = new ModelManager();
-    }
-    return _instance;
-}
-
-void ModelManager::ReleaseInstance()
-{
-    if (_instance)
-    {
-        delete _instance;
-        _instance = nullptr;
-    }
 }
 
 ModelManager::~ModelManager()

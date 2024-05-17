@@ -1,10 +1,9 @@
 #include "Scene.hpp"
 #include <Config.hpp>
 
-#include <live2d/LAppPal.hpp>
+#include <LAppPal.hpp>
 
-
-Scene::Scene()
+Scene::Scene(ModelManager *manager) : _modelManager(manager)
 {
     setWindowFlags(Qt::FramelessWindowHint);          // 无边框
     setAttribute(Qt::WA_TranslucentBackground, true); // 透明背景
@@ -13,11 +12,16 @@ Scene::Scene()
 
 Scene::~Scene()
 {
+    _modelManager = nullptr;
 }
 
 void Scene::initializeGL()
 {
+
+    // 设置当前 opengl 上下文为 _scene
     makeCurrent();
+
+    resize(Config::GetSceneWidth(), Config::GetSceneHeight());
 
     if (glewInit() != GLEW_OK)
     {
@@ -33,14 +37,8 @@ void Scene::initializeGL()
 
     glViewport(0, 0, Config::GetSceneWidth(), Config::GetSceneHeight());
 
-    // 后续放在其他类里面
-    _cubismOption.LogFunction = LAppPal::PrintMessage;
-    _cubismOption.LoggingLevel = Csm::CubismFramework::Option::LogLevel_Verbose;
-    Csm::CubismFramework::StartUp(&_cubismAllocator, &_cubismOption);
-    Csm::CubismFramework::Initialize();
-
     // 必须在CubismFramework初始化后调用
-    ModelManager::GetInstance()->SetModel(Config::GetModelName().c_str());
+    _modelManager->SetModel(Config::GetModelName().c_str());
 
     startTimer(1000 / 60);
 }
@@ -59,7 +57,7 @@ void Scene::paintGL()
     glClearDepth(1.0);
 
     // modelManager updateModel
-    ModelManager::GetInstance()->UpdateModel(width(), height());
+    _modelManager->UpdateModel(width(), height());
 }
 
 void Scene::resizeGL(int w, int h)

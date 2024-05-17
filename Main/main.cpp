@@ -1,31 +1,21 @@
 #include <GL/glew.h> // 尽量放在开头
-#include <widgets/impl/Scene.hpp>
-#include <Config.hpp>
-#include <utils/Log.hpp>
 #include <QtWidgets/qapplication.h>
 
-#include <CubismFramework.hpp>
-#include <live2d/LAppPal.hpp>
+#include <AppDelegate.hpp>
+#include <QtCore/qcoreapplication.h>
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    if (!Config::Initialize())
-    {
-        return -1;
-    }
+    AppDelegate::GetInstance()->Initialize();
 
-    Scene scene;
+    AppDelegate::GetInstance()->Run();
 
-    scene.show();
-
-    scene.resize(Config::GetSceneWidth(), Config::GetSceneHeight());
+    // 自动销毁
+    QObject::connect(&app, &QCoreApplication::aboutToQuit, []()
+                     { AppDelegate::ReleaseInstance(); });
 
     app.exec();
-
-    ModelManager::ReleaseInstance();
-    Csm::CubismFramework::Dispose();
-
     return 0;
 }
