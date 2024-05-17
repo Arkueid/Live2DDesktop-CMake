@@ -1,0 +1,10 @@
+{
+    "scene": {
+        "width": 400,
+        "height": 500
+    },
+    "resource_dir": "Resources/",
+    "model": {
+        "name": "hiyori"
+    }
+}

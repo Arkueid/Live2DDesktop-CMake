@@ -1,6 +1,8 @@
 #pragma once
 
-// 全局设置文件
+// 全局默认参数
+
+// 全局设置文件路径
 #define APP_CONFIG_PATH "config.json"
 // Scene 宽度
 #define APP_SCENE_WIDTH 400;
@@ -8,3 +10,5 @@
 #define APP_SCENE_HEIGHT 500;
 // 资源文件夹
 #define APP_RESOURCE_DIR "Resources/"
+// 模型名称
+#define APP_MODEL_NAME "Hiyori"

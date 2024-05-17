@@ -1,19 +1,29 @@
 #pragma once
 
-#include <QtCore/qjsonobject.h>
+#define KEY_RESOURCE_DIR "resource_dir"
+#define KEY_SCENE "scene"
+#define KEY_SCENE_WIDTH "width"
+#define KEY_SCENE_HEIGHT "height"
+#define KEY_MODEL "model"
+#define KEY_MODEL_NAME "name"
 
-class Config
+#include <iostream>
+
+namespace Config
 {
-private:
-    QJsonObject *_json;
-    Config();
-    ~Config();
+    extern bool Initialize();
+    extern bool GenerateDefaultConfig();
+    extern bool SaveConfig();
 
-public:
-    static void Initialize();
-    static Config *GetInstance();
-    static void ReleaseInstance();
-    const char *GetResourceDir();
-    int GetSceneWidth();
-    int GetSceneHeight();
+    // get
+    extern std::string GetResourceDir();
+    extern int GetSceneWidth();
+    extern int GetSceneHeight();
+    extern std::string GetModelName();
+
+    // set
+    extern void SetResourceDir(std::string resource_dir);
+    extern void SetSceneWidth(int width);
+    extern void SetSceneHeight(int height);
+    extern void SetModelName(std::string name);
 };

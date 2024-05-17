@@ -12,7 +12,7 @@ set(RES_PATH ${PROJECT_ROOT}/Resources)
 
 # Set Qt Installation Path
 set(CMAKE_PREFIX_PATH D:/cdk/qt/5.15.2/mingw81_64)
-find_package(Qt5 REQUIRED Core Gui Widgets Quick Qml)
+find_package(Qt5 REQUIRED Core Gui Widgets)
 
 # Surpress GLEW and GLFW process.
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
@@ -70,12 +70,15 @@ find_package(OpenGL REQUIRED)
 # Make executable app.
 add_executable(${APP_NAME} 
   main.cpp
-  AppConfig.cpp
+  Config.cpp
 )
 
 # Add source files.
 add_subdirectory(live2d)
 add_subdirectory(model)
+add_subdirectory(utils)
+add_subdirectory(widgets)
+
 
 # Link libraries to app.
 target_link_libraries(${APP_NAME}
@@ -85,12 +88,15 @@ target_link_libraries(${APP_NAME}
   Qt5::Core
   Qt5::Gui
   Qt5::Widgets
-  Qt5::Quick
-  Qt5::Qml
 )
 
 # Specify include directories.
-target_include_directories(${APP_NAME} PRIVATE ${STB_PATH} ${QT_INCLUDE_PATH}/include live2d .)
+target_include_directories(${APP_NAME} PRIVATE 
+  ${STB_PATH}
+  ${QT_INCLUDE_PATH}/include
+  live2d
+   .
+)
 
 # Post build commands
 add_custom_command(

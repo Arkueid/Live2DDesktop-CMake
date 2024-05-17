@@ -1,5 +1,5 @@
 #include "ModelManager.hpp"
-#include <AppConfig.hpp>
+#include <Config.hpp>
 #include <assert.h>
 
 static LAppModel *_currentModel = nullptr;
@@ -55,7 +55,7 @@ void ModelManager::SetModel(const char *modelDir)
 
     _currentModel = new LAppModel();
 
-    std::string modelPath(AppConfig::ResourceDir);
+    std::string modelPath(Config::GetResourceDir());
     modelPath += modelDir;
     modelPath.append("/");
 
@@ -82,7 +82,6 @@ void ModelManager::UpdateModel(int winWidth, int winHeight)
         projection.Scale(static_cast<float>(winHeight) / static_cast<float>(winWidth), 1.0f);
     }
 
-    // 以下两个函数访问权需要从 private 变为 public
     _currentModel->Update();
     _currentModel->Draw(projection);
 }

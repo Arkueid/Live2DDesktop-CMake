@@ -1,61 +1,117 @@
 #include "Config.hpp"
-#include <assert.h>
+#include <QtCore/qjsonobject.h>
 
-#include <iostream>
-#include <fstream>
 #include <QtCore/qjsondocument.h>
-
+#include <QtCore/qfile.h>
 #include <Default.hpp>
 
 #include <utils/Log.hpp>
 
-static Config* _instance = nullptr;
+static QJsonObject _json;
 
-void Config::Initialize()
+bool Config::Initialize()
 {
-    _instance = new Config();
-    std::ifstream file;
-    file.open(APP_CONFIG_PATH);
-    if (!file.is_open())
+    QFile file;
+    file.setFileName(APP_CONFIG_PATH);
+    file.open(QFile::ReadOnly);
+    if (!file.exists())
     {
-        Error("config file read error");
+        GenerateDefaultConfig();
+        SaveConfig();
+        Info("generate new config : %s", APP_CONFIG_PATH);
+        return true;
     }
-}
 
-Config *Config::GetInstance()
-{
-    assert(_instance != nullptr);
-
-    return _instance;
-}
-
-void Config::ReleaseInstance()
-{
-    if (_instance)
+    if (!file.isOpen())
     {
-        delete _instance;
+        Error("file open error: %s", APP_CONFIG_PATH);
+        return false;
     }
+    QByteArray bytes = file.readAll();
+
+    QJsonParseError error;
+    QJsonDocument doc = QJsonDocument::fromJson(bytes, &error);
+    if (error.error != QJsonParseError::NoError)
+    {
+        Error("文件解析错误: %s", error.errorString().toStdString().c_str());
+        return false;
+    }
+    _json = doc.object();
+    return true;
 }
 
-Config::Config()
+bool Config::GenerateDefaultConfig()
 {
+    _json = QJsonObject();
+
+    SetResourceDir("Resources/");
+    SetSceneWidth(400);
+    SetSceneHeight(500);
+    SetModelName("hiyori");
+
+    return true;
 }
 
-Config::~Config()
+bool Config::SaveConfig()
 {
+    QFile file;
+    file.setFileName(APP_CONFIG_PATH);
+    file.open(QFile::ReadWrite);
+    if (!file.isOpen())
+    {
+        Error("file open error: %s", APP_CONFIG_PATH);
+        return false;
+    }
+
+    QJsonDocument doc(_json);
+
+    file.write(doc.toJson());
+    file.close();
+    return true;
 }
 
-const char *Config::GetResourceDir()
+std::string Config::GetResourceDir()
 {
-    return nullptr;
+    return _json.value(KEY_RESOURCE_DIR).toString().toStdString();
 }
 
 int Config::GetSceneWidth()
 {
-    return 0;
+    return _json.value(KEY_SCENE).toObject().value(KEY_SCENE_WIDTH).toInt();
 }
 
 int Config::GetSceneHeight()
 {
-    return 0;
+    return _json.value(KEY_SCENE).toObject().value(KEY_SCENE_HEIGHT).toInt();
+}
+
+std::string Config::GetModelName()
+{
+    return _json.value(KEY_MODEL).toObject().value(KEY_MODEL_NAME).toString().toStdString();
+}
+
+void Config::SetResourceDir(std::string resource_dir)
+{
+    _json[KEY_RESOURCE_DIR] = resource_dir.c_str();
+}
+
+void Config::SetSceneWidth(int width)
+{
+    QJsonObject scene = _json[KEY_SCENE].toObject();
+    scene[KEY_SCENE_WIDTH] = width;
+    _json[KEY_SCENE] = scene;
+}
+
+void Config::SetSceneHeight(int height)
+{
+    QJsonObject scene = _json[KEY_SCENE].toObject();
+    scene[KEY_SCENE_HEIGHT] = height;
+    _json[KEY_SCENE] = scene;
+}
+
+void Config::SetModelName(std::string name)
+{
+    QJsonObject model = _json[KEY_MODEL].toObject();
+    model[KEY_MODEL_NAME] = name.c_str();
+    _json[KEY_MODEL] = model;
 }

@@ -18,7 +18,7 @@
 #define LOG_DEBUG_FILE_FORMAT "[DEBUG %s] %s:%d: %s\n"
 
 #define TIME_BUFSIZE 20
-#define MAX_LEVEL_HEADER_SIZE 128
+#define MAX_LEVEL_HEADER_SIZE 32
 #define MAX_BUFSIZE 1024
 #define MAX_MSG_SIZE (MAX_BUFSIZE - MAX_LEVEL_HEADER_SIZE)
 
@@ -32,7 +32,7 @@ void current_time(char *buf)
     strftime(buf, TIME_BUFSIZE, "%Y-%m-%d %H:%M:%S", timeinfo);
 }
 
-void WriteConsole(const char *level_fmt, ...)
+static void WriteConsole(const char *level_fmt, ...)
 {
     va_list args;
     va_start(args, level_fmt);
@@ -46,7 +46,7 @@ void WriteConsole(const char *level_fmt, ...)
     printf(buffer);
 }
 
-void WriteFile(const char *level_fmt, const char *file, ...)
+static void WriteFile(const char *level_fmt, const char *file, ...)
 {
     std::fstream f;
 
@@ -71,7 +71,7 @@ void WriteFile(const char *level_fmt, const char *file, ...)
     f.close();
 }
 
-void Info(const char *fmt, ...)
+void _Info(const char *fmt, ...)
 {
     char time_buf[TIME_BUFSIZE];
     current_time(time_buf);
@@ -86,7 +86,7 @@ void Info(const char *fmt, ...)
     WriteConsole(LOG_INFO_CONSOLE_FORMAT, time_buf, msg_buf);
 }
 
-void InfoF(const char *file, const char *fmt, ...)
+void _InfoF(const char *file, const char *fmt, ...)
 {
     char time_buf[TIME_BUFSIZE];
     current_time(time_buf);
@@ -100,7 +100,7 @@ void InfoF(const char *file, const char *fmt, ...)
     WriteFile(LOG_INFO_FILE_FORMAT, file, time_buf, msg_buf);
 }
 
-void Error(const char *fmt, ...)
+void _Error(const char *fmt, ...)
 {
     char time_buf[TIME_BUFSIZE];
     current_time(time_buf);
@@ -114,7 +114,7 @@ void Error(const char *fmt, ...)
     WriteConsole(LOG_ERROR_CONSOLE_FORMAT, time_buf, msg_buf);
 }
 
-void ErrorF(const char *file, const char *fmt, ...)
+void _ErrorF(const char *file, const char *fmt, ...)
 {
     char time_buf[TIME_BUFSIZE];
     current_time(time_buf);
