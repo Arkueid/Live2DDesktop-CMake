@@ -24,7 +24,20 @@ TrayIcon::TrayIcon(QWidget *parent): QSystemTrayIcon(parent)
     _menu.addAction(_actions.back());
     setContextMenu(&_menu);
 
-    connect(_actions.at(0), SIGNAL(triggered()), SLOT(SwitchSceneVisible()));
+    // setup signals
+    QList<void (TrayIcon::*)()> _slots = {
+        &TrayIcon::SwitchSceneVisible,
+        &TrayIcon::SwitchMouseTrack,
+        &TrayIcon::SwitchMouseEventsTranparent,
+        &TrayIcon::SwitchStayOnTop,
+        &TrayIcon::ShowSettings,
+        &TrayIcon::Exit,
+    };
+
+    for (int i = 0; i < _slots.size(); i++)
+    {
+        connect(_actions.at(i), &QAction::triggered, this, _slots[i]);
+    }
 }
 
 TrayIcon::~TrayIcon()

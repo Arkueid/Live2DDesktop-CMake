@@ -4,7 +4,7 @@
 #include <QtWidgets/qaction.h>
 #include <QtWidgets/qmenu.h>
 
-class TrayIcon: QSystemTrayIcon
+class TrayIcon: public QSystemTrayIcon
 {
     Q_OBJECT
 public:

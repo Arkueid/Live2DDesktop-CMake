@@ -1,0 +1,19 @@
+{
+    "model": {
+        "name": "Hiyori"
+    },
+    "mouse": {
+        "events_transparent": false,
+        "track": true
+    },
+    "resource_dir": "Resources/",
+    "scene": {
+        "height": 500,
+        "stay_on_top": false,
+        "visible": true,
+        "width": 400
+    },
+    "systray": {
+        "icon_path": "Resources/icon.png"
+    }
+}

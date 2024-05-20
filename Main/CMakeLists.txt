@@ -117,5 +117,5 @@ add_custom_command(
     ${CMAKE_PREFIX_PATH}/bin/windeployqt $<TARGET_FILE_DIR:${APP_NAME}>/${APP_NAME}.exe
   COMMAND
     ${CMAKE_COMMAND} -E
-      rm $<TARGET_FILE_DIR:${APP_NAME}>/config.json
+      rm -f $<TARGET_FILE_DIR:${APP_NAME}>/config.json
 )
