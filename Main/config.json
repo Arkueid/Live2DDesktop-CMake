@@ -1,10 +1,19 @@
 {
     "scene": {
         "width": 400,
-        "height": 500
+        "height": 500,
+        "visible": true,
+        "stay_on_top": true
     },
     "resource_dir": "Resources/",
     "model": {
         "name": "hiyori"
+    },
+    "systray": {
+        "icon_path": "Resources/icon.png"
+    },
+    "mouse": {
+        "track": true,
+        "events_transparent": false
     }
 }

@@ -6,7 +6,7 @@
 
 static AppDelegate *_instance = nullptr;
 
-AppDelegate::AppDelegate() : _scene(nullptr), _modelManager(nullptr)
+AppDelegate::AppDelegate() : _scene(nullptr), _modelManager(nullptr), _trayIcon(nullptr)
 {
 }
 
@@ -51,11 +51,16 @@ void AppDelegate::Initialize()
 
     _scene = new Scene(_modelManager);
 
+    _trayIcon = new TrayIcon(_scene);
+
     InitializeCubism();
 }
 
 void AppDelegate::Release()
 {
+    if (_trayIcon != nullptr)
+        delete _trayIcon;
+
     if (_scene != nullptr)
     {
         _scene->hide();
@@ -76,8 +81,10 @@ void AppDelegate::Release()
 void AppDelegate::Run()
 {
     assert(_scene != nullptr);
+    assert(_trayIcon != nullptr);
     assert(_modelManager != nullptr);
 
+    _trayIcon->Show();
     _scene->show();
 }
 

@@ -12,6 +12,7 @@ set(RES_PATH ${PROJECT_ROOT}/Resources)
 
 # Set Qt Installation Path
 set(CMAKE_PREFIX_PATH D:/cdk/qt/5.15.2/mingw81_64)
+set(CMAKE_AUTOMOC ON) 
 find_package(Qt5 REQUIRED Core Gui Widgets)
 
 # Surpress GLEW and GLFW process.
@@ -105,10 +106,16 @@ add_custom_command(
   POST_BUILD
   COMMAND
     ${CMAKE_COMMAND} -E
+      rm -rf $<TARGET_FILE_DIR:${APP_NAME}>/Resources
+  COMMAND
+    ${CMAKE_COMMAND} -E
       copy_directory ${RES_PATH} $<TARGET_FILE_DIR:${APP_NAME}>/Resources
   COMMAND
     ${CMAKE_COMMAND} -E
       copy ${CORE_PATH}/dll/Live2DCubismCore.dll $<TARGET_FILE_DIR:${APP_NAME}>
   COMMAND
     ${CMAKE_PREFIX_PATH}/bin/windeployqt $<TARGET_FILE_DIR:${APP_NAME}>/${APP_NAME}.exe
+  COMMAND
+    ${CMAKE_COMMAND} -E
+      rm $<TARGET_FILE_DIR:${APP_NAME}>/config.json
 )

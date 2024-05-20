@@ -13,6 +13,7 @@ Scene::Scene(ModelManager *manager) : _modelManager(manager)
 Scene::~Scene()
 {
     _modelManager = nullptr;
+    this->killTimer(_timer);
 }
 
 void Scene::initializeGL()
@@ -40,7 +41,7 @@ void Scene::initializeGL()
     // 必须在CubismFramework初始化后调用
     _modelManager->SetModel(Config::GetModelName().c_str());
 
-    startTimer(1000 / 60);
+    _timer = startTimer(1000 / 60);
 }
 
 void Scene::timerEvent(QTimerEvent *event)

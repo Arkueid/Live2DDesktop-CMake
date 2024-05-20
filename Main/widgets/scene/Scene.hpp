@@ -15,5 +15,6 @@ protected:
     void resizeGL(int w, int h);
 private:
     ModelManager *_modelManager;
+    int _timer;
 };
 

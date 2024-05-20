@@ -4,6 +4,7 @@
 #include <IAppDelegate.hpp>
 
 #include <widgets/scene/Scene.hpp>
+#include <widgets/trayicon/TrayIcon.hpp>
 
 #include <live2d/LAppPal.hpp>
 #include <live2d/LAppAllocator.hpp>
@@ -15,7 +16,6 @@ public:
     static AppDelegate *GetInstance();
     static void ReleaseInstance();
     /// @brief 初始化，失败直接退出程序
-    // todo: 需要显示释放资源
     void Initialize();
     /// @brief 显示释放所有资源
     void Release();
@@ -24,6 +24,7 @@ public:
 
     IModelManager *GetModelManager();
     Scene *GetScene();
+    TrayIcon *GetTrayIcon();
 
 private:
     AppDelegate();
@@ -32,7 +33,10 @@ private:
     LAppAllocator _cubismAllocator;             // 内存分配器
     Csm::CubismFramework::Option _cubismOption; // 框架设置
 
+    // widgets
     Scene *_scene;               // 绘图窗口
+    TrayIcon *_trayIcon;         // 系统托盘
+    // live2d
     ModelManager *_modelManager; // 模型管理类
 
     // 初始化 Cubism 框架
