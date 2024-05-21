@@ -2,6 +2,23 @@
 * 基于Cubism官方示例Cubism Native Sample Minimum Demo修改
 * 基于 Qt 的跨平台支持
 
+## 功能
+* 模型
+    - [x] 加载模型
+    - [ ] 切换模型
+    - [ ] 修补动作参数
+    - [ ] 修改模型参数
+* 界面
+    - [x] 角色绘制
+    - [x] 系统托盘
+    - [ ] 设置窗口
+    - [ ] 右键菜单
+    - [ ] 输入窗口
+    - [ ] 聊天记录
+* 其他
+    - [x] 跨平台：linux/windows
+    - [ ] 插件
+    
 ## 环境
 Windows:  
 * Qt 5.15.2 (MinGW-win64) （没有安装qt可以直接使用thirdParty中的静态库，但是运行需要使用 windeployqt）
