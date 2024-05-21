@@ -15,3 +15,5 @@ thirdParty/glfw/*
 thirdParty/stb/*
 !thirdParty/stb/.gitkeep
 !thirdParty/stb/README.md
+
+*.tar.gz

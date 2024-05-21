@@ -12,7 +12,6 @@
 #include <iostream>
 #include <fstream>
 #include <GL/glew.h>
-// #include <GLFW/glfw3.h>
 #include <Model/CubismMoc.hpp>
 #include "LAppDefine.hpp"
 #include <chrono>
@@ -96,7 +95,8 @@ void LAppPal::PrintLog(const csmChar* format, ...)
     va_list args;
     csmChar buf[256];
     va_start(args, format);
-    vsnprintf_s(buf, sizeof(buf), format, args); // 標準出力でレンダリング
+    // TODO vsnprintf_s -> vsnprintf
+    vsnprintf(buf, sizeof(buf), format, args); // 標準出力でレンダリング
 #ifdef CSM_DEBUG_MEMORY_LEAKING
 // メモリリークチェック時は大量の標準出力がはしり重いのでprintfを利用する
     std::printf(buf);
@@ -111,7 +111,8 @@ void LAppPal::PrintLogLn(const Csm::csmChar* format, ...)
     va_list args;
     csmChar buf[256];
     va_start(args, format);
-    vsnprintf_s(buf, sizeof(buf), format, args); // 標準出力でレンダリング
+    // TODO vsnprintf_s -> vsnprintf
+    vsnprintf(buf, sizeof(buf), format, args); // 標準出力でレンダリング
 #ifdef CSM_DEBUG_MEMORY_LEAKING
     // メモリリークチェック時は大量の標準出力がはしり重いのでprintfを利用する
     std::printf("%s\n", buf);
