@@ -22,4 +22,4 @@
 
 #define APP_MOUSE_TRACK true
 
-#define APP_MOUSE_EVENTS_TRANSPARENT false
+#define APP_MOUSE_CLICK_TRANSPARENT false

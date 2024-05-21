@@ -95,7 +95,6 @@ void LAppPal::PrintLog(const csmChar* format, ...)
     va_list args;
     csmChar buf[256];
     va_start(args, format);
-    // TODO vsnprintf_s -> vsnprintf
     vsnprintf(buf, sizeof(buf), format, args); // 標準出力でレンダリング
 #ifdef CSM_DEBUG_MEMORY_LEAKING
 // メモリリークチェック時は大量の標準出力がはしり重いのでprintfを利用する
@@ -111,7 +110,6 @@ void LAppPal::PrintLogLn(const Csm::csmChar* format, ...)
     va_list args;
     csmChar buf[256];
     va_start(args, format);
-    // TODO vsnprintf_s -> vsnprintf
     vsnprintf(buf, sizeof(buf), format, args); // 標準出力でレンダリング
 #ifdef CSM_DEBUG_MEMORY_LEAKING
     // メモリリークチェック時は大量の標準出力がはしり重いのでprintfを利用する

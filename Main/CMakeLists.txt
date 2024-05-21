@@ -11,7 +11,6 @@ set(QT_INCLUDE_PATH ${THIRD_PARTY_PATH}/qt)
 set(RES_PATH ${PROJECT_ROOT}/Resources)
 
 # Set Qt Installation Path
-# TODO 
 if(CMAKE_SYSTEM_NAME MATCHES "Linux")
   set(CMAKE_PREFIX_PATH /usr/lib)
   set(CSM_TARGET CSM_TARGET_LINUX_GL)
@@ -126,9 +125,10 @@ add_custom_command(
   COMMAND
     ${CMAKE_COMMAND} -E
       copy ${CORE_PATH}/dll/${CORE_LIB_NAME} $<TARGET_FILE_DIR:${APP_NAME}>
-  COMMAND
-    ${CMAKE_COMMAND} -E
-      rm -f $<TARGET_FILE_DIR:${APP_NAME}>/config.json
+  # TODO test for default json
+  # COMMAND
+  #   ${CMAKE_COMMAND} -E
+  #     rm -f $<TARGET_FILE_DIR:${APP_NAME}>/config.json
 )
 
 

@@ -12,7 +12,7 @@
 #define KEY_SYS_TRAY_ICON_PATH "icon_path"
 #define KEY_MOUSE "mouse"
 #define KEY_MOUSE_TRACK "track"
-#define KEY_MOUSE_EVENTS_TRANSPARENT "events_transparent"
+#define KEY_MOUSE_CLICK_TRANSPARENT "click_transparent"
 
 #include <iostream>
 
@@ -44,7 +44,7 @@ namespace Config
 
     // mouse
     extern void SetMouseTrack(bool enable);
-    extern void SetMouseEventsTransparent(bool enable);
+    extern void SetMouseClickTransparent(bool enable);
     extern bool GetMouseTrack();
-    extern bool GetMouseEventsTransparent();
+    extern bool GetMouseClickTransparent();
 };

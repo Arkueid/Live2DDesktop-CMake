@@ -1,19 +1,30 @@
 #include "Scene.hpp"
 #include <Config.hpp>
 
-#include <LAppPal.hpp>
+#include <live2d/LAppPal.hpp>
+#include <AppDelegate.hpp>
 
-Scene::Scene(ModelManager *manager) : _modelManager(manager)
+#include <QtGui/qcursor.h>
+
+Scene::Scene()
 {
-    setWindowFlags(Qt::FramelessWindowHint);          // 无边框
+    setWindowFlags(Qt::FramelessWindowHint|Qt::Tool);          // 无边框
     setAttribute(Qt::WA_TranslucentBackground, true); // 透明背景
     setAttribute(Qt::WA_AlwaysStackOnTop, true);      // 置于最上层
+    
+    _cursor.setShape(Qt::CursorShape::OpenHandCursor);
+
+    setCursor(_cursor);
 }
 
 Scene::~Scene()
 {
-    _modelManager = nullptr;
     this->killTimer(_timer);
+}
+
+void Scene::SetVisible(bool visible)
+{
+    setVisible(visible);
 }
 
 void Scene::initializeGL()
@@ -39,14 +50,9 @@ void Scene::initializeGL()
     glViewport(0, 0, Config::GetSceneWidth(), Config::GetSceneHeight());
 
     // 必须在CubismFramework初始化后调用
-    _modelManager->SetModel(Config::GetModelName().c_str());
+    AppDelegate::GetInstance()->GetModelManager()->SetModel(Config::GetModelName().c_str());
 
     _timer = startTimer(1000 / 60);
-}
-
-void Scene::timerEvent(QTimerEvent *event)
-{
-    update(); // 刷新窗口缓冲
 }
 
 void Scene::paintGL()
@@ -58,7 +64,7 @@ void Scene::paintGL()
     glClearDepth(1.0);
 
     // modelManager updateModel
-    _modelManager->UpdateModel(width(), height());
+    AppDelegate::GetInstance()->GetModelManager()->UpdateModel(width(), height());
 }
 
 void Scene::resizeGL(int w, int h)
@@ -79,4 +85,44 @@ void Scene::resizeGL(int w, int h)
         // ビューポート変更
         glViewport(0, 0, w, h);
     }
+}
+
+void Scene::timerEvent(QTimerEvent *event)
+{
+    int x = QCursor::pos().x();
+    int y = QCursor::pos().y();
+    AppDelegate::GetInstance()->GetMouseActionManager()->OnMovePerFrame(x, y, 0);
+    update(); // 刷新窗口缓冲
+}
+
+void Scene::mousePressEvent(QMouseEvent *event)
+{
+    AppDelegate::GetInstance()->GetMouseActionManager()->OnClickStart(event->x(), event->y(), event->button());
+}
+
+void Scene::mouseReleaseEvent(QMouseEvent *event)
+{
+    AppDelegate::GetInstance()->GetMouseActionManager()->OnClickEnd(event->x(), event->y(), event->button());
+}
+
+void Scene::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    AppDelegate::GetInstance()->GetMouseActionManager()->OnDoubleClick(event->x(), event->y(), event->button());
+}
+
+void Scene::mouseMoveEvent(QMouseEvent *event)
+{
+    AppDelegate::GetInstance()->GetMouseActionManager()->OnMove(event->x(), event->y(), event->buttons());
+}
+
+void Scene::enterEvent(QEvent *event)
+{
+    QMouseEvent *e = (QMouseEvent *)event;
+    AppDelegate::GetInstance()->GetMouseActionManager()->OnEnter(e->x(), e->y());
+}
+
+void Scene::leaveEvent(QEvent *event)
+{
+    QMouseEvent *e = (QMouseEvent *)event;
+    AppDelegate::GetInstance()->GetMouseActionManager()->OnLeave(e->x(), e->y());
 }

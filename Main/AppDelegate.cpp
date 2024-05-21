@@ -1,12 +1,15 @@
 #include "AppDelegate.hpp"
 
 #include <Config.hpp>
-#include <utils/Log.hpp>
+#include <utils/log/Log.hpp>
 #include <QtWidgets/qapplication.h>
 
 static AppDelegate *_instance = nullptr;
 
-AppDelegate::AppDelegate() : _scene(nullptr), _modelManager(nullptr), _trayIcon(nullptr)
+AppDelegate::AppDelegate() : _scene(nullptr),
+                             _modelManager(nullptr),
+                             _trayIcon(nullptr),
+                             _mouseActionManager(nullptr)
 {
 }
 
@@ -47,11 +50,18 @@ void AppDelegate::Initialize()
         return;
     }
 
+    // TODO 初始化 _modelManager
     _modelManager = new ModelManager();
 
-    _scene = new Scene(_modelManager);
+    // 初始化 _mouseActionManager
+    _mouseActionManager = new MouseActionManager();
+    _mouseActionManager->Initialize();
 
-    _trayIcon = new TrayIcon(_scene);
+    // 初始化 _scene
+    _scene = new Scene();
+
+    _trayIcon = new TrayIcon();
+    _trayIcon->Initialize();
 
     InitializeCubism();
 }
@@ -63,17 +73,23 @@ void AppDelegate::Release()
 
     if (_scene != nullptr)
     {
-        _scene->hide();
+        _scene->SetVisible(false);
 
         delete _scene;
     }
     if (_modelManager != nullptr)
         delete _modelManager;
 
+    if (_mouseActionManager != nullptr)
+        delete _mouseActionManager;
+
     _scene = nullptr;
     _modelManager = nullptr;
+    _mouseActionManager = nullptr;
 
     Csm::CubismFramework::Dispose();
+
+    Config::SaveConfig();
 
     qApp->exit();
 }
@@ -83,9 +99,12 @@ void AppDelegate::Run()
     assert(_scene != nullptr);
     assert(_trayIcon != nullptr);
     assert(_modelManager != nullptr);
+    assert(_mouseActionManager != nullptr);
 
     _trayIcon->Show();
-    _scene->show();
+
+    // TODO merge into Initialize func
+    _scene->SetVisible(Config::GetSceneVisible());
 }
 
 IModelManager *AppDelegate::GetModelManager()
@@ -96,6 +115,16 @@ IModelManager *AppDelegate::GetModelManager()
 Scene *AppDelegate::GetScene()
 {
     return _scene;
+}
+
+TrayIcon *AppDelegate::GetTrayIcon()
+{
+    return _trayIcon;
+}
+
+MouseActionManager *AppDelegate::GetMouseActionManager()
+{
+    return _mouseActionManager;
 }
 
 void AppDelegate::InitializeCubism()

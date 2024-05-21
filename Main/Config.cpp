@@ -5,7 +5,7 @@
 #include <QtCore/qfile.h>
 #include <Default.hpp>
 
-#include <utils/Log.hpp>
+#include <utils/log/Log.hpp>
 
 static QJsonObject _json;
 
@@ -52,7 +52,7 @@ bool Config::GenerateDefaultConfig()
     SetModelName(APP_MODEL_NAME);
     SetSysTrayIconPath(APP_SYS_TRAY_ICON_PATH);
     SetMouseTrack(APP_MOUSE_TRACK);
-    SetMouseEventsTransparent(APP_MOUSE_EVENTS_TRANSPARENT);
+    SetMouseClickTransparent(APP_MOUSE_CLICK_TRANSPARENT);
     return true;
 }
 
@@ -71,6 +71,7 @@ bool Config::SaveConfig()
 
     file.write(doc.toJson());
     file.close();
+    Info("config saved to %s", APP_CONFIG_PATH);
     return true;
 }
 
@@ -123,10 +124,10 @@ void Config::SetMouseTrack(bool enable)
     _json[KEY_MOUSE] = mouse;
 }
 
-void Config::SetMouseEventsTransparent(bool enable)
+void Config::SetMouseClickTransparent(bool enable)
 {
     QJsonObject mouse = _json.value(KEY_MOUSE).toObject();
-    mouse[KEY_MOUSE_EVENTS_TRANSPARENT] = enable;
+    mouse[KEY_MOUSE_CLICK_TRANSPARENT] = enable;
     _json[KEY_MOUSE] = mouse;
 }
 
@@ -135,9 +136,9 @@ bool Config::GetMouseTrack()
     return _json.value(KEY_MOUSE).toObject().value(KEY_MOUSE_TRACK).toBool();
 }
 
-bool Config::GetMouseEventsTransparent()
+bool Config::GetMouseClickTransparent()
 {
-    return _json.value(KEY_MOUSE).toObject().value(KEY_MOUSE_EVENTS_TRANSPARENT).toBool();
+    return _json.value(KEY_MOUSE).toObject().value(KEY_MOUSE_CLICK_TRANSPARENT).toBool();
 }
 
 void Config::SetResourceDir(std::string resource_dir)
