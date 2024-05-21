@@ -61,5 +61,6 @@
         "variant": "cpp",
         "codecvt": "cpp"
     },
-    "C_Cpp.default.compilerPath": "D:\\cdk\\MinGW\\bin\\g++.exe"
+    "C_Cpp.default.compilerPath": "/usr/bin/gcc",
+    "C_Cpp.intelliSenseEngineFallback": "enabled"
 }

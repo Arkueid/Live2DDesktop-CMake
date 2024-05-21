@@ -11,8 +11,17 @@ set(QT_INCLUDE_PATH ${THIRD_PARTY_PATH}/qt)
 set(RES_PATH ${PROJECT_ROOT}/Resources)
 
 # Set Qt Installation Path
-set(CMAKE_PREFIX_PATH D:/cdk/qt/5.15.2/mingw81_64)
-set(CMAKE_AUTOMOC ON) 
+# TODO 
+if(CMAKE_SYSTEM_NAME MATCHES "Linux")
+  set(CMAKE_PREFIX_PATH /usr/lib)
+  set(CSM_TARGET CSM_TARGET_LINUX_GL)
+  set(CORE_LIB_NAME libLive2DCubismCore.so)
+else(CMAKE_SYSTEM_NAME MATCHES "Windows")
+  set(CMAKE_PREFIX_PATH D:/cdk/qt/5.15.2/mingw81_64)
+  set(CSM_TARGET CSM_TARGET_WIN_GL)
+  set(CORE_LIB_NAME Live2DCubismCore.dll)
+endif()
+
 find_package(Qt5 REQUIRED Core Gui Widgets)
 
 # Surpress GLEW and GLFW process.
@@ -38,13 +47,15 @@ set(FRAMEWORK_SOURCE OpenGL)
 # Add Cubism Native Framework.
 add_subdirectory(${FRAMEWORK_PATH} ${CMAKE_BINARY_DIR}/Framework)
 # Add rendering definition to framework.
-target_compile_definitions(Framework PUBLIC CSM_TARGET_WIN_GL)
+target_compile_definitions(Framework PUBLIC CSM_TARGET_LINUX_GL)
 # Add include path of GLEW to framework.
 target_include_directories(Framework PUBLIC ${GLEW_PATH}/include)
 # If current compiler is mingw, add some options
-if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-  target_compile_options(Framework PRIVATE -fpermissive -Wconversion-null)
-endif()  
+if(CMAKE_SYSTEM_NAME MATCHES "Windows")
+  if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    target_compile_options(Framework PRIVATE -fpermissive -Wconversion-null)
+  endif()  
+endif()
 # Link libraries to framework.
 add_library(Live2DCubismCore STATIC IMPORTED)
 
@@ -53,14 +64,14 @@ add_library(Live2DCubismCore STATIC IMPORTED)
 set_target_properties(Live2DCubismCore
   PROPERTIES
     IMPORTED_LOCATION
-      ${CORE_PATH}/dll/Live2DCubismCore.lib
+      ${CORE_PATH}/dll/${CORE_LIB_NAME}
     INTERFACE_INCLUDE_DIRECTORIES
       ${CORE_PATH}/include
 )
 target_compile_definitions(Live2DCubismCore
   INTERFACE
   __linux__# Windows 平台上使用 mingw 也需要使用该宏，应该是没有做 mingw 的适配
-  CSM_TARGET_WIN_GL 
+  ${CSM_TARGET}
 )
 
 target_link_libraries(Framework Live2DCubismCore glew_s)
@@ -68,6 +79,8 @@ target_link_libraries(Framework Live2DCubismCore glew_s)
 # Find opengl libraries.
 find_package(OpenGL REQUIRED)
 
+
+set(CMAKE_AUTOMOC ON) 
 # Make executable app.
 add_executable(${APP_NAME} 
   main.cpp
@@ -112,10 +125,27 @@ add_custom_command(
       copy_directory ${RES_PATH} $<TARGET_FILE_DIR:${APP_NAME}>/Resources
   COMMAND
     ${CMAKE_COMMAND} -E
-      copy ${CORE_PATH}/dll/Live2DCubismCore.dll $<TARGET_FILE_DIR:${APP_NAME}>
-  COMMAND
-    ${CMAKE_PREFIX_PATH}/bin/windeployqt $<TARGET_FILE_DIR:${APP_NAME}>/${APP_NAME}.exe
+      copy ${CORE_PATH}/dll/${CORE_LIB_NAME} $<TARGET_FILE_DIR:${APP_NAME}>
   COMMAND
     ${CMAKE_COMMAND} -E
       rm -f $<TARGET_FILE_DIR:${APP_NAME}>/config.json
 )
+
+
+
+if (CMAKE_SYSTEM_NAME MATCHES "Linux")
+  add_custom_command(
+    TARGET ${APP_NAME}
+    POST_BUILD
+    COMMAND
+      ${CMAKE_COMMAND} -E
+        copy ${PROJECT_ROOT}/Main/live2d_launch.sh $<TARGET_FILE_DIR:${APP_NAME}>
+  )
+elseif(CMAKE_SYSTEM_NAME MATCHES "Windows")
+  add_custom_command(
+        TARGET ${APP_NAME}
+        POST_BUILD
+        COMMAND
+          ${CMAKE_PREFIX_PATH}/bin/windeployqt.exe $<TARGET_FILE_DIR:${APP_NAME}>/${APP_NAME}.exe
+  )
+endif()
