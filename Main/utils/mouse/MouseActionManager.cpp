@@ -124,6 +124,15 @@ void MouseActionManager::SetMouseClickTransparentEnable(bool enable)
     _clickEnable = !enable;
 }
 
+bool MouseActionManager::IsHover(int x, int y)
+{
+    Scene *scene = AppDelegate::GetInstance()->GetScene();
+    float xf = (float)QCursor::pos().x() - scene->x();
+    float yf = (float)QCursor::pos().y() - scene->y();
+    AppDelegate::GetInstance()->GetMatrixManager()->ScreenToScene(&xf, &yf);
+    return AppDelegate::GetInstance()->GetModelManager()->IsHover(xf, yf);
+}
+
 // default callbacks
 
 static int lastMouseX = 0;

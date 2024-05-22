@@ -105,6 +105,9 @@ void Scene::timerEvent(QTimerEvent *event)
 {
     int x = QCursor::pos().x();
     int y = QCursor::pos().y();
+
+    setMouseClickEnable(AppDelegate::GetInstance()->GetMouseActionManager()->IsHover(x, y));
+
     AppDelegate::GetInstance()->GetMouseActionManager()->OnMovePerFrame(x, y, 0);
     update(); // 刷新窗口缓冲
 }
@@ -139,4 +142,24 @@ void Scene::leaveEvent(QEvent *event)
 {
     QMouseEvent *e = (QMouseEvent *)event;
     AppDelegate::GetInstance()->GetMouseActionManager()->OnLeave(e->x(), e->y());
+}
+
+void Scene::setMouseClickEnable(bool on)
+{
+#ifdef Q_OS_LINUX
+    XShapeCombineRectangles(QX11Info::display(), winId(), ShapeInput, 0,
+                            0, NULL, 0, ShapeSet, YXBanded);
+#endif
+#ifdef Q_OS_WIN
+    if (on)
+    {
+        SetWindowLong((HWND)winId(), GWL_EXSTYLE, GetWindowLong((HWND)winId(), GWL_EXSTYLE) & ~WS_EX_TRANSPARENT // 忽略一切消息（WM_PAINT除外）
+                                                      | WS_EX_LAYERED);                                          // 层风格，有他才能支持半透明
+    }
+    else
+    {
+        SetWindowLong((HWND)winId(), GWL_EXSTYLE, GetWindowLong((HWND)winId(), GWL_EXSTYLE) | WS_EX_TRANSPARENT // 忽略一切消息（WM_PAINT除外）
+                                                      | WS_EX_LAYERED);                                         // 层风格，有他才能支持半透明
+    }
+#endif
 }

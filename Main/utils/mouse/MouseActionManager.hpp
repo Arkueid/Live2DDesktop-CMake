@@ -41,6 +41,8 @@ public:
     void OnDoubleClick(int x, int y, int button);
     void SetMouseTrackEnable(bool enable);
     void SetMouseClickTransparentEnable(bool enable);
+    /// @brief to test if mouse is on the character
+    bool IsHover(int x, int y);
 private:
     Callback _onEnter;
     Callback _onLeave;

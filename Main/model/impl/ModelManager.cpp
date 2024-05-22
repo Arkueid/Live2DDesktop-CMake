@@ -86,3 +86,9 @@ void ModelManager::OnDrag(float x, float y)
 {
     _currentModel->SetDragging(x, y);
 }
+
+bool ModelManager::IsHover(float x, float y)
+{
+    csmString hitArea = _currentModel->HitTest(x, y);
+    return strlen(hitArea.GetRawString()) != 0;
+}
