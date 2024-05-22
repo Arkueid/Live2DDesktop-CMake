@@ -10,12 +10,8 @@ PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/LAppTextureManager.hpp
   ${CMAKE_CURRENT_SOURCE_DIR}/LAppModel.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/LAppModel.hpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/TouchManager.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/TouchManager.hpp
   ${CMAKE_CURRENT_SOURCE_DIR}/CubismSampleViewMatrix.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/CubismSampleViewMatrix.hpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/MouseActionManager.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/MouseActionManager.hpp
   ${CMAKE_CURRENT_SOURCE_DIR}/LAppWavFileHandler.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/LAppWavFileHandler.hpp
 )

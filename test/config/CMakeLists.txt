@@ -1,5 +1,5 @@
 # test for config
-add_executable(test Config_test.cpp ${PROJECT_ROOT}/Main/Config.cpp ${PROJECT_ROOT}/Main/utils/Log.cpp)
+add_executable(test Config_test.cpp ${PROJECT_ROOT}/Main/Config.cpp ${PROJECT_ROOT}/Main/utils/log/Log.cpp)
 target_include_directories(test PUBLIC ${PROJECT_ROOT}/Main)
 
 set(CMAKE_PREFIX_PATH D:/cdk/qt/5.15.2/mingw81_64)
@@ -12,7 +12,7 @@ add_custom_command(
     POST_BUILD
     COMMAND
     ${CMAKE_COMMAND} -E
-      rm $<TARGET_FILE_DIR:test>/config.json
+      rm -f $<TARGET_FILE_DIR:test>/config.json
     COMMAND
       ${CMAKE_PREFIX_PATH}/bin/windeployqt $<TARGET_FILE_DIR:test>/test.exe
 )

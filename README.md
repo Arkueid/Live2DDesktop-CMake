@@ -40,4 +40,3 @@ Linux(以Archlinux为例):
 * `Ctrl+Shift+P` 并选择 `CMake: Configure`
 * Windows平台需要将 `Main/CMakeLists.txt` 中 `set(CMAKE_PREFIX_PATH, ...)` 的 `...` 修改为 qt 的安装路径
 * 选择 `live2d` 进行构建
-

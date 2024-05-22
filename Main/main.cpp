@@ -2,6 +2,7 @@
 #include <QtWidgets/qapplication.h>
 
 #include <AppDelegate.hpp>
+#include <Config.hpp>
 #include <QtCore/qcoreapplication.h>
 
 int main(int argc, char *argv[])

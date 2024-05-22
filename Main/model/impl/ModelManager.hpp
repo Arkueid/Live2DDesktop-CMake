@@ -13,6 +13,11 @@ public:
 
     void UpdateModel(int winWidth, int winHeight);
 
+    void OnTouch(float x, float y);
+
+    void OnDrag(float x, float y);
+
+    bool IsHover(float x, float y);
 private:
     LAppModel *_currentModel;
 };

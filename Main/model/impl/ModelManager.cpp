@@ -2,6 +2,12 @@
 #include <Config.hpp>
 #include <assert.h>
 
+#include <CubismFramework.hpp>
+#include <utils/log/Log.hpp>
+#include <Default.hpp>
+
+using namespace Csm;
+
 ModelManager::ModelManager(): _currentModel(nullptr)
 {
 }
@@ -64,3 +70,25 @@ void ModelManager::UpdateModel(int winWidth, int winHeight)
     _currentModel->Draw(projection);
 }
 
+void ModelManager::OnTouch(float x, float y)
+{
+    csmString hitArea = _currentModel->HitTest(x, y);
+    if (strlen(hitArea.GetRawString()) != 0)
+    {
+        Info("hit area: [%s]", hitArea.GetRawString());
+        if (strcmp(hitArea.GetRawString(), HIT_AREA_HEAD) == 0) _currentModel->SetRandomExpression();
+        _currentModel->StartRandomMotion(hitArea.GetRawString(), MOTION_PRIORITY_FORCE);
+        return;
+    }
+}
+
+void ModelManager::OnDrag(float x, float y)
+{
+    _currentModel->SetDragging(x, y);
+}
+
+bool ModelManager::IsHover(float x, float y)
+{
+    csmString hitArea = _currentModel->HitTest(x, y);
+    return strlen(hitArea.GetRawString()) != 0;
+}

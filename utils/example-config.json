@@ -3,8 +3,8 @@
         "name": "Hiyori"
     },
     "mouse": {
-        "events_transparent": false,
-        "track": true
+        "click_transparent": false,
+        "track": false
     },
     "resource_dir": "Resources/",
     "scene": {

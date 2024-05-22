@@ -20,6 +20,8 @@
 #include "LAppPal.hpp"
 #include "LAppTextureManager.hpp"
 
+#include <utils/log/Log.hpp>
+
 using namespace Live2D::Cubism::Framework;
 using namespace Live2D::Cubism::Framework::DefaultParameterId;
 using namespace LAppDefine;
@@ -29,7 +31,7 @@ namespace {
     {
         if (DebugLogEnable)
         {
-            LAppPal::PrintLogLn("[APP]create buffer: %s ", path);
+            Info("create buffer: %s ", path);
         }
         return LAppPal::LoadFileAsBytes(path, size);
     }
@@ -38,7 +40,7 @@ namespace {
     {
         if (DebugLogEnable)
         {
-            LAppPal::PrintLogLn("[APP]delete buffer: %s", path);
+            Info("delete buffer: %s", path);
         }
         LAppPal::ReleaseBytes(buffer);
     }
@@ -88,7 +90,7 @@ void LAppModel::LoadAssets(const csmChar* dir, const csmChar* fileName)
 
     if (_debugMode)
     {
-        LAppPal::PrintLogLn("[APP]load model setting: %s", fileName);
+        Info("load model setting: %s", fileName);
     }
 
     csmSizeInt size;
@@ -102,7 +104,7 @@ void LAppModel::LoadAssets(const csmChar* dir, const csmChar* fileName)
 
     if (_model == NULL)
     {
-        LAppPal::PrintLogLn("Failed to LoadAssets().");
+        Info("Failed to LoadAssets().");
         return;
     }
 
@@ -129,7 +131,7 @@ void LAppModel::SetupModel(ICubismModelSetting* setting)
 
         if (_debugMode)
         {
-            LAppPal::PrintLogLn("[APP]create model: %s", setting->GetModelFileName());
+            Info("create model: %s", setting->GetModelFileName());
         }
 
         buffer = CreateBuffer(path.GetRawString(), &size);
@@ -237,7 +239,7 @@ void LAppModel::SetupModel(ICubismModelSetting* setting)
 
     if (_modelSetting == NULL || _modelMatrix == NULL)
     {
-        LAppPal::PrintLogLn("Failed to SetupModel().");
+        Info("Failed to SetupModel().");
         return;
     }
 
@@ -273,7 +275,7 @@ void LAppModel::PreloadMotionGroup(const csmChar* group)
 
         if (_debugMode)
         {
-            LAppPal::PrintLogLn("[APP]load motion: %s => [%s_%d] ", path.GetRawString(), group, i);
+            Info("load motion: %s => [%s_%d] ", path.GetRawString(), group, i);
         }
 
         csmByte* buffer;
@@ -456,7 +458,7 @@ CubismMotionQueueEntryHandle LAppModel::StartMotion(const csmChar* group, csmInt
     {
         if (_debugMode)
         {
-            LAppPal::PrintLogLn("[APP]can't start motion.");
+            Info("can't start motion.");
         }
         return InvalidMotionQueueEntryHandleValue;
     }
@@ -513,7 +515,7 @@ CubismMotionQueueEntryHandle LAppModel::StartMotion(const csmChar* group, csmInt
 
     if (_debugMode)
     {
-        LAppPal::PrintLogLn("[APP]start motion: [%s_%d]", group, no);
+        Info("start motion: [%s_%d]", group, no);
     }
     return  _motionManager->StartMotionPriority(motion, autoDelete, priority);
 }
@@ -573,12 +575,31 @@ csmBool LAppModel::HitTest(const csmChar* hitAreaName, csmFloat32 x, csmFloat32 
     return false; // 存在しない場合はfalse
 }
 
+Csm::csmString LAppModel::HitTest(Csm::csmFloat32 x, Csm::csmFloat32 y)
+{
+    // 透明時は当たり判定なし。
+    if (_opacity < 1)
+    {
+        return "";
+    }
+    const csmInt32 count = _modelSetting->GetHitAreasCount();
+    for (csmInt32 i = 0; i < count; i++)
+    {
+        const CubismIdHandle drawID = _modelSetting->GetHitAreaId(i);
+        if (IsHit(drawID, x, y))
+        {
+            return _modelSetting->GetHitAreaName(i);
+        }
+    }
+    return "";
+}
+
 void LAppModel::SetExpression(const csmChar* expressionID)
 {
     ACubismMotion* motion = _expressions[expressionID];
     if (_debugMode)
     {
-        LAppPal::PrintLogLn("[APP]expression: [%s]", expressionID);
+        Info("expression: [%s]", expressionID);
     }
 
     if (motion != NULL)
@@ -587,7 +608,7 @@ void LAppModel::SetExpression(const csmChar* expressionID)
     }
     else
     {
-        if (_debugMode) LAppPal::PrintLogLn("[APP]expression[%s] is null ", expressionID);
+        if (_debugMode) Info("expression[%s] is null ", expressionID);
     }
 }
 

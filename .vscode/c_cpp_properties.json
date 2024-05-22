@@ -3,23 +3,23 @@
         {
             "name": "Win32",
             "includePath": [
+                "D:/cdk/MinGW/include",
                 "${workspaceFolder}/Main",
                 "${workspaceFolder}/Framework/src",
-                "${workspaceFolder}/Main/live2d",
                 "D:/cdk/qt/5.15.2/mingw81_64/include",
                 "${workspaceFolder}/Core/include",
                 "${workspaceFolder}/thirdParty/glew/include",
                 "${workspaceFolder}/thirdParty/glfw/include",
                 "${workspaceFolder}/thirdParty/stb",
-                "${workspaceFolder}/Main"
+                "${workspaceFolder}/Main",
+                "${workspaceFolder}/Main/live2d",
+                "/usr/include/qt"
             ],
             "defines": [
                 "_DEBUG",
                 "UNICODE",
                 "_UNICODE"
-            ],
-            "windowsSdkVersion": "10.0.22621.0",
-            "intelliSenseMode": "windows-msvc-x64",
+            ]
         }
     ],
     "version": 4
