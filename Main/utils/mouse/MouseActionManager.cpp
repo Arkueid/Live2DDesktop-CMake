@@ -126,6 +126,9 @@ void MouseActionManager::SetMouseClickTransparentEnable(bool enable)
 
 bool MouseActionManager::IsHover(int x, int y)
 {
+    // IsHover 为鼠标点击事件服务，禁用点击后不需要检测
+    if (!_clickEnable) return false;
+
     Scene *scene = AppDelegate::GetInstance()->GetScene();
     float xf = (float)QCursor::pos().x() - scene->x();
     float yf = (float)QCursor::pos().y() - scene->y();

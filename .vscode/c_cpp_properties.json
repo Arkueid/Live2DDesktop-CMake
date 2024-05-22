@@ -12,7 +12,8 @@
                 "${workspaceFolder}/thirdParty/glfw/include",
                 "${workspaceFolder}/thirdParty/stb",
                 "${workspaceFolder}/Main",
-                "${workspaceFolder}/Main/live2d"
+                "${workspaceFolder}/Main/live2d",
+                "/usr/include/qt"
             ],
             "defines": [
                 "_DEBUG",

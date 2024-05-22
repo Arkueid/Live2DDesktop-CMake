@@ -147,19 +147,32 @@ void Scene::leaveEvent(QEvent *event)
 void Scene::setMouseClickEnable(bool on)
 {
 #ifdef Q_OS_LINUX
-    XShapeCombineRectangles(QX11Info::display(), winId(), ShapeInput, 0,
-                            0, NULL, 0, ShapeSet, YXBanded);
+    if (on)
+    {
+        XRectangle rect;
+        rect.x = 0;
+        rect.y = 0;
+        rect.width = width();
+        rect.height = height();
+        XShapeCombineRectangles(QX11Info::display(), winId(), ShapeInput, 0,
+                                0, &rect, 1, ShapeSet, YXBanded);
+    }
+    else
+    {
+        XShapeCombineRectangles(QX11Info::display(), winId(), ShapeInput, 0,
+                                0, NULL, 0, ShapeSet, YXBanded);
+    }
 #endif
 #ifdef Q_OS_WIN
     if (on)
     {
-        SetWindowLong((HWND)winId(), GWL_EXSTYLE, GetWindowLong((HWND)winId(), GWL_EXSTYLE) & ~WS_EX_TRANSPARENT // 忽略一切消息（WM_PAINT除外）
-                                                      | WS_EX_LAYERED);                                          // 层风格，有他才能支持半透明
+        SetWindowLong((HWND)winId(), GWL_EXSTYLE, GetWindowLong((HWND)winId(), GWL_EXSTYLE) & ~WS_EX_TRANSPARENT // ignore all events（except WM_PAINT）
+                                                      | WS_EX_LAYERED);                                          
     }
     else
     {
-        SetWindowLong((HWND)winId(), GWL_EXSTYLE, GetWindowLong((HWND)winId(), GWL_EXSTYLE) | WS_EX_TRANSPARENT // 忽略一切消息（WM_PAINT除外）
-                                                      | WS_EX_LAYERED);                                         // 层风格，有他才能支持半透明
+        SetWindowLong((HWND)winId(), GWL_EXSTYLE, GetWindowLong((HWND)winId(), GWL_EXSTYLE) | WS_EX_TRANSPARENT
+                                                      | WS_EX_LAYERED);                                         
     }
 #endif
 }

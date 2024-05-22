@@ -123,14 +123,12 @@ void TrayIcon::SwitchMouseClickTranparent()
 
 void TrayIcon::SwitchStayOnTop()
 {
-    // TODO Scene.SetOnTop()
     bool enable = !Config::GetSceneStayOnTop();
 
     Info("SetStayOnTop %d", enable);
 
     Config::SetSceneStayOnTop(enable);
 
-    // TODO new function SetStayOnTopEnable
     AppDelegate::GetInstance()->GetScene()->SetStayOnTop(enable);
 }
 
@@ -142,8 +140,14 @@ void TrayIcon::ShowSettings()
 
 void TrayIcon::PopUpScene(QSystemTrayIcon::ActivationReason reason)
 {
+#ifdef Q_OS_LINUX
+    if (reason == QSystemTrayIcon::ActivationReason::Trigger)
+#endif
+#ifdef Q_OS_WIN
     if (reason == QSystemTrayIcon::ActivationReason::DoubleClick)
+#endif
     {
+        Debug("tray icon double click");
         Config::SetSceneVisible(true);
         _actions[0]->setChecked(true);
         AppDelegate::GetInstance()->GetScene()->Popup();
