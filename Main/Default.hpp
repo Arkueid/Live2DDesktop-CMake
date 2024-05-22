@@ -24,6 +24,8 @@
 
 #define APP_MOUSE_CLICK_TRANSPARENT false
 
+#define APP_FPS 30
+
 // 动作优先级
 #define MOTION_PRIORITY_NONE 0
 #define MOTION_PRIORITY_IDLE 1

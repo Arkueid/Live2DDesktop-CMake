@@ -65,7 +65,8 @@ void Scene::initializeGL()
     // 必须在CubismFramework初始化后调用
     AppDelegate::GetInstance()->GetModelManager()->SetModel(Config::GetModelName().c_str());
 
-    _timer = startTimer(1000 / 60);
+    // TODO 
+    _timer = startTimer(1000 / 30);
 }
 
 void Scene::paintGL()

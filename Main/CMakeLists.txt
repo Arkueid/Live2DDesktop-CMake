@@ -98,6 +98,17 @@ add_executable(${APP_NAME}
   AppDelegate.cpp
 )
 
+if(${CMAKE_BUILD_TYPE} MATCHES "Release")
+  set_target_properties(${APP_NAME} PROPERTIES
+    WIN32_EXECUTABLE ON
+  )
+else()
+  set_target_properties(${APP_NAME} PROPERTIES
+    WIN32_EXECUTABLE OFF
+  )
+  target_compile_definitions(${APP_NAME} PRIVATE APP_MODE_DEBUG)
+endif()
+
 # Add source files.
 add_subdirectory(live2d)
 add_subdirectory(model)
