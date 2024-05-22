@@ -7,15 +7,15 @@
 #include <stdarg.h>
 #include <string.h>
 
-#define LOG_INFO_CONSOLE_FORMAT "\033[32m[INFO  %s] %s\033[0m\n"
+#define LOG_INFO_CONSOLE_FORMAT "[INFO  %s] %s\n"
 #define LOG_ERROR_CONSOLE_FORMAT "\033[31m[ERROR %s] %s\033[0m\n"
 #define LOG_INFO_FILE_FORMAT "[INFO  %s] %s\n"
 #define LOG_ERROR_FILE_FORMAT "[ERROR %s] %s\n"
 #define LOG_INFO_OUTPUT "info.log"
 #define LOG_ERROR_OUTPUT "error.log"
 
-#define LOG_DEBUG_CONSOLE_FORMAT "\033[34m[DEBUG %s] %s:%d: %s\033[0m\n"
-#define LOG_DEBUG_FILE_FORMAT "[DEBUG %s] %s:%d: %s\n"
+#define LOG_DEBUG_CONSOLE_FORMAT "\033[34m[DEBUG %s] %s\033[0m\n"
+#define LOG_DEBUG_FILE_FORMAT "[DEBUG %s] %s\n"
 
 #define TIME_BUFSIZE 20
 #define MAX_LEVEL_HEADER_SIZE 32
@@ -128,30 +128,30 @@ void _ErrorF(const char *file, const char *fmt, ...)
     WriteFile(LOG_ERROR_FILE_FORMAT, file, time_buf, msg_buf);
 }
 
-void _Debug(const char *fmt, const char *filename, int line, ...)
+void _Debug(const char *fmt, ...)
 {
     char time_buf[TIME_BUFSIZE];
     current_time(time_buf);
     va_list args;
-    va_start(args, line);
+    va_start(args, fmt);
 
     char msg_buf[MAX_MSG_SIZE];
     vsnprintf(msg_buf, MAX_MSG_SIZE, fmt, args);
     va_end(args);
 
-    WriteConsole(LOG_DEBUG_CONSOLE_FORMAT, time_buf, filename, line, msg_buf);
+    WriteConsole(LOG_DEBUG_CONSOLE_FORMAT, time_buf, msg_buf);
 }
 
-void _DebugF(const char *file, const char *fmt, const char *filename, int line, ...)
+void _DebugF(const char *file, const char *fmt, ...)
 {
     char time_buf[TIME_BUFSIZE];
     current_time(time_buf);
     va_list args;
-    va_start(args, line);
+    va_start(args, fmt);
 
     char msg_buf[MAX_MSG_SIZE];
     vsnprintf(msg_buf, MAX_MSG_SIZE, fmt, args);
     va_end(args);
 
-    WriteFile(LOG_DEBUG_FILE_FORMAT, file, time_buf, filename, line, msg_buf);
+    WriteFile(LOG_DEBUG_FILE_FORMAT, file, time_buf, msg_buf);
 }

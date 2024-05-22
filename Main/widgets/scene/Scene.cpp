@@ -3,15 +3,15 @@
 
 #include <live2d/LAppPal.hpp>
 #include <AppDelegate.hpp>
+#include <utils/log/Log.hpp>
 
 #include <QtGui/qcursor.h>
 
 Scene::Scene()
 {
-    setWindowFlags(Qt::FramelessWindowHint|Qt::Tool);          // 无边框
-    setAttribute(Qt::WA_TranslucentBackground, true); // 透明背景
-    setAttribute(Qt::WA_AlwaysStackOnTop, true);      // 置于最上层
-    
+    setWindowFlags(Qt::FramelessWindowHint | Qt::Tool); // 无边框
+    setAttribute(Qt::WA_TranslucentBackground, true);   // 透明背景
+
     _cursor.setShape(Qt::CursorShape::OpenHandCursor);
 
     setCursor(_cursor);
@@ -22,14 +22,27 @@ Scene::~Scene()
     this->killTimer(_timer);
 }
 
-void Scene::SetVisible(bool visible)
+void Scene::Popup()
 {
-    setVisible(visible);
+    setWindowFlag(Qt::WindowStaysOnTopHint, true);
+    show();
+    setWindowFlag(Qt::WindowStaysOnTopHint, false);
+    show();
+}
+
+void Scene::SetStayOnTop(bool on)
+{
+    setWindowFlag(Qt::WindowStaysOnTopHint, on);
+    show();
+}
+
+void Scene::Start()
+{
+    show();
 }
 
 void Scene::initializeGL()
 {
-
     // 设置当前 opengl 上下文为 _scene
     makeCurrent();
 
@@ -37,7 +50,7 @@ void Scene::initializeGL()
 
     if (glewInit() != GLEW_OK)
     {
-        LAppPal::PrintLogLn("Can't initilize glew.");
+        Info("Can't initilize glew.");
     }
     // テクスチャサンプリング設定
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -77,7 +90,6 @@ void Scene::resizeGL(int w, int h)
 
     if ((windowWidth != w || windowHeight != h) && w > 0 && h > 0)
     {
-        // MouseActionManager::GetInstance()->ViewInitialize(w, h);
         // サイズを保存しておく
         windowWidth = w;
         windowHeight = h;
@@ -85,6 +97,8 @@ void Scene::resizeGL(int w, int h)
         // ビューポート変更
         glViewport(0, 0, w, h);
     }
+
+    AppDelegate::GetInstance()->GetMatrixManager()->AdaptToSceneSize();
 }
 
 void Scene::timerEvent(QTimerEvent *event)

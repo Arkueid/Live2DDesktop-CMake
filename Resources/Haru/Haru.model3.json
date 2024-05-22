@@ -105,11 +105,11 @@
 	"HitAreas": [
 		{
 			"Id": "HitArea",
-			"Name": "Head"
+			"Name": "TapHead"
 		},
 		{
 			"Id": "HitArea2",
-			"Name": "Body"
+			"Name": "TapBody"
 		}
 	]
 }

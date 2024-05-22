@@ -11,6 +11,8 @@
 
 #include <utils/mouse/MouseActionManager.hpp>
 
+#include <utils/matrix/MatrixManager.hpp>
+
 class AppDelegate : public IAppDelegate
 {
 public:
@@ -28,7 +30,7 @@ public:
     Scene *GetScene();
     TrayIcon *GetTrayIcon();
     MouseActionManager *GetMouseActionManager();
-
+    MatrixManager *GetMatrixManager();
 private:
     AppDelegate();
     ~AppDelegate();
@@ -42,6 +44,7 @@ private:
     // live2d
     ModelManager *_modelManager;             // 模型管理类
     MouseActionManager *_mouseActionManager; // 鼠标管理类
+    MatrixManager *_matrixManager;           // 坐标矩阵管理类
 
     // 初始化 Cubism 框架
     void InitializeCubism();

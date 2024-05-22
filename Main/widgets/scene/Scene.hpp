@@ -4,15 +4,14 @@
 
 #include <QtGui/qevent.h>
 
-class Scene: QOpenGLWidget
+class Scene: public QOpenGLWidget
 {
 public:
     Scene();
     ~Scene();
-    void SetVisible(bool visible);
-    /// @brief 开关鼠标点击事件，鼠标点击、拖动
-    /// @param enable 
-    void SetClickTransparentEnable(bool enable);
+    void Popup();
+    void SetStayOnTop(bool on);
+    void Start();
 protected:
     void initializeGL();
     void timerEvent(QTimerEvent *event);

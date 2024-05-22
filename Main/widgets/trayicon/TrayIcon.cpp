@@ -39,7 +39,6 @@ TrayIcon::TrayIcon()
         connect(_actions.at(i), &QAction::triggered, this, _slots[i]);
     }
 
-    // connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(trayIconOnActivated(QSystemTrayIcon::ActivationReason)));
     connect(this, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(PopUpScene(QSystemTrayIcon::ActivationReason)));
 }
 
@@ -93,7 +92,7 @@ void TrayIcon::SwitchSceneVisible()
 {
     bool visible = !Config::GetSceneVisible();
 
-    AppDelegate::GetInstance()->GetScene()->SetVisible(visible);
+    AppDelegate::GetInstance()->GetScene()->setVisible(visible);
 
     Config::SetSceneVisible(visible);
 }
@@ -104,6 +103,10 @@ void TrayIcon::SwitchMouseTrack()
     Info("SetMouseTrack %d", enable);
 
     AppDelegate::GetInstance()->GetMouseActionManager()->SetMouseTrackEnable(enable);
+
+    // 关闭功能后视线复位
+    if (!enable)
+        AppDelegate::GetInstance()->GetModelManager()->OnDrag(0.0f, 0.0f);
 
     Config::SetMouseTrack(enable);
 }
@@ -126,6 +129,9 @@ void TrayIcon::SwitchStayOnTop()
     Info("SetStayOnTop %d", enable);
 
     Config::SetSceneStayOnTop(enable);
+
+    // TODO new function SetStayOnTopEnable
+    AppDelegate::GetInstance()->GetScene()->SetStayOnTop(enable);
 }
 
 void TrayIcon::ShowSettings()
@@ -140,6 +146,6 @@ void TrayIcon::PopUpScene(QSystemTrayIcon::ActivationReason reason)
     {
         Config::SetSceneVisible(true);
         _actions[0]->setChecked(true);
-        AppDelegate::GetInstance()->GetScene()->SetVisible(true);
+        AppDelegate::GetInstance()->GetScene()->Popup();
     }
 }

@@ -13,4 +13,15 @@ public:
     virtual void SetModel(const char *modelDir) = 0;
 
     virtual void UpdateModel(int winWidth, int winHeight) = 0;
+    
+
+    /// @brief 点击触碰
+    /// @param x opengl 坐标系 x
+    /// @param y opengl 坐标系 y
+    virtual void OnTouch(float x, float y) = 0;
+
+    /// @brief 视线拖动
+    /// @param x opengl 坐标系 x
+    /// @param y opengl 坐标系 y
+    virtual void OnDrag(float x, float y) = 0;
 };

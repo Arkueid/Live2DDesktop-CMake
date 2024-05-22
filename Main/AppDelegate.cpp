@@ -9,7 +9,8 @@ static AppDelegate *_instance = nullptr;
 AppDelegate::AppDelegate() : _scene(nullptr),
                              _modelManager(nullptr),
                              _trayIcon(nullptr),
-                             _mouseActionManager(nullptr)
+                             _mouseActionManager(nullptr),
+                             _matrixManager(nullptr)  
 {
 }
 
@@ -57,6 +58,10 @@ void AppDelegate::Initialize()
     _mouseActionManager = new MouseActionManager();
     _mouseActionManager->Initialize();
 
+    // 初始化 _matrixManager
+    _matrixManager = new MatrixManager();
+    _matrixManager->Initialize();
+
     // 初始化 _scene
     _scene = new Scene();
 
@@ -73,7 +78,7 @@ void AppDelegate::Release()
 
     if (_scene != nullptr)
     {
-        _scene->SetVisible(false);
+        _scene->setVisible(false);
 
         delete _scene;
     }
@@ -83,9 +88,13 @@ void AppDelegate::Release()
     if (_mouseActionManager != nullptr)
         delete _mouseActionManager;
 
+    if (_matrixManager != nullptr)
+        delete _matrixManager;
+
     _scene = nullptr;
     _modelManager = nullptr;
     _mouseActionManager = nullptr;
+    _matrixManager = nullptr;
 
     Csm::CubismFramework::Dispose();
 
@@ -100,11 +109,11 @@ void AppDelegate::Run()
     assert(_trayIcon != nullptr);
     assert(_modelManager != nullptr);
     assert(_mouseActionManager != nullptr);
+    assert(_matrixManager != nullptr);
 
     _trayIcon->Show();
 
-    // TODO merge into Initialize func
-    _scene->SetVisible(Config::GetSceneVisible());
+    _scene->Start();
 }
 
 IModelManager *AppDelegate::GetModelManager()
@@ -127,10 +136,15 @@ MouseActionManager *AppDelegate::GetMouseActionManager()
     return _mouseActionManager;
 }
 
+MatrixManager *AppDelegate::GetMatrixManager()
+{
+    return _matrixManager;
+}
+
 void AppDelegate::InitializeCubism()
 {
     // 一个窗口对应一个Cubism
-    _cubismOption.LogFunction = LAppPal::PrintMessage;
+    _cubismOption.LogFunction = LAppPal::PrintLn;
     _cubismOption.LoggingLevel = Csm::CubismFramework::Option::LogLevel_Verbose;
     Csm::CubismFramework::StartUp(&_cubismAllocator, &_cubismOption);
     Csm::CubismFramework::Initialize();

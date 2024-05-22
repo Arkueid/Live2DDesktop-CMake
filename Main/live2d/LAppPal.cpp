@@ -14,7 +14,9 @@
 #include <GL/glew.h>
 #include <Model/CubismMoc.hpp>
 #include "LAppDefine.hpp"
+
 #include <chrono>
+#include <utils/log/Log.hpp>
 
 using std::endl;
 using namespace Csm;
@@ -40,7 +42,7 @@ csmByte* LAppPal::LoadFileAsBytes(const string filePath, csmSizeInt* outSize)
         {
             if (DebugLogEnable)
             {
-                PrintLogLn("Stat succeeded but file size is zero. path:%s", path);
+                Info("Stat succeeded but file size is zero. path:%s", path);
             }
             return NULL;
         }
@@ -49,7 +51,7 @@ csmByte* LAppPal::LoadFileAsBytes(const string filePath, csmSizeInt* outSize)
     {
         if (DebugLogEnable)
         {
-            PrintLogLn("Stat failed. errno:%d path:%s", errno, path);
+            Info("Stat failed. errno:%d path:%s", errno, path);
         }
         return NULL;
     }
@@ -60,7 +62,7 @@ csmByte* LAppPal::LoadFileAsBytes(const string filePath, csmSizeInt* outSize)
     {
         if (DebugLogEnable)
         {
-            PrintLogLn("File open failed. path:%s", path);
+            Info("File open failed. path:%s", path);
         }
         return NULL;
     }
@@ -90,42 +92,7 @@ void LAppPal::UpdateTime()
     s_lastFrame = s_currentFrame;
 }
 
-void LAppPal::PrintLog(const csmChar* format, ...)
+void LAppPal::PrintLn(const Csm::csmChar *message)
 {
-    va_list args;
-    csmChar buf[256];
-    va_start(args, format);
-    vsnprintf(buf, sizeof(buf), format, args); // 標準出力でレンダリング
-#ifdef CSM_DEBUG_MEMORY_LEAKING
-// メモリリークチェック時は大量の標準出力がはしり重いのでprintfを利用する
-    std::printf(buf);
-#else
-    std::cout << buf;
-#endif
-    va_end(args);
-}
-
-void LAppPal::PrintLogLn(const Csm::csmChar* format, ...)
-{
-    va_list args;
-    csmChar buf[256];
-    va_start(args, format);
-    vsnprintf(buf, sizeof(buf), format, args); // 標準出力でレンダリング
-#ifdef CSM_DEBUG_MEMORY_LEAKING
-    // メモリリークチェック時は大量の標準出力がはしり重いのでprintfを利用する
-    std::printf("%s\n", buf);
-#else
-    std::cout << buf << std::endl;
-#endif
-    va_end(args);
-}
-
-void LAppPal::PrintMessage(const csmChar* message)
-{
-    PrintLog("%s", message);
-}
-
-void LAppPal::PrintMessageLn(const csmChar* message)
-{
-    PrintLogLn("%s", message);
+    Info(message);
 }
