@@ -27,7 +27,7 @@ ModelManager::~ModelManager()
 
 void ModelManager::Initialize()
 {
-    ModelDirectory::Initialize(Config::GetResourceDir().c_str());
+    ModelDirectory::SetResourceDirectory(Config::GetResourceDir().c_str());
 }
 
 LAppModel *ModelManager::GetModel()

@@ -11,7 +11,7 @@
 static std::vector<std::string> _modelDirs;
 
 // o(n)
-static char *get_basename(const char *path)
+static void get_basename(const char *path, char *name)
 {
     char *ptr = (char *)path;
     char *ret = ptr;
@@ -23,16 +23,24 @@ static char *get_basename(const char *path)
         }
         ptr++;
     }
-    return ret;
+    // ret != "/"
+    int i = 0;
+    while (*ret != '\0' && *ret != '\\' && *ret != '/')
+    {
+        *name++ = *ret++;
+        i++;
+    }
+    *name = '\0';
 }
 
-bool ModelDirectory::Initialize(const char *resourceDir)
+bool ModelDirectory::SetResourceDirectory(const char *resourceDir)
 {
     std::string _resourceDir(resourceDir);
     DIR *dir = opendir(resourceDir);
 
     struct dirent *entry;
 
+    // o(n)
     while ((entry = readdir(dir)) != nullptr)
     {
         if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
@@ -49,50 +57,17 @@ bool ModelDirectory::Initialize(const char *resourceDir)
 
 bool ModelDirectory::IsModelDir(const char *path)
 {
-    bool moc3 = false, model3_json = false;
-    char moc3_name[MAX_DIR_NAME_LEN];
-    char model3_json_name[MAX_DIR_NAME_LEN];
+    std::string _path = path;
 
     struct stat st;
-    if (stat(path, &st) == 1) // no such file
-    {
-        return false;
-    }
+    char name[MAX_DIR_NAME_LEN];
+    get_basename(path, name);
 
-    if (!S_ISDIR(st.st_mode)) // is not a dir
-    {
-        return false;
-    }
+    if (stat((_path + "/" + name + MODEL_JSON_SUFFIX).c_str(), &st) == -1) return false;
 
-    DIR *dir = opendir(path);
+    if (stat((_path + "/" + name + MODEL_MOC_SUFFIX).c_str(), &st) == -1) return false;
 
-    struct dirent *entry;
-
-    int i = 0;
-    char *ptr = get_basename(path);
-    while (*ptr != '\0')
-    {
-        if (*ptr == '\\' || *ptr == '/')
-            break;
-        model3_json_name[i] = *ptr;
-        moc3_name[i] = *ptr;
-        ptr++;
-        i++;
-    }
-
-    strcpy(model3_json_name + i, MODEL_JSON_SUFFIX);
-    strcpy(moc3_name + i, MODEL_MOC_SUFFIX);
-
-    while ((entry = readdir(dir)) != nullptr)
-    {
-        if (model3_json && moc3)
-            break;
-        if (!model3_json && strcmp(entry->d_name, model3_json_name) == 0)
-            model3_json = true;
-        if (!moc3 && strcmp(entry->d_name, moc3_name) == 0)
-            moc3 = true;
-    }
-    return model3_json && moc3;
+    return true;
 }
 
 std::vector<std::string>& ModelDirectory::GetModelDirs()
