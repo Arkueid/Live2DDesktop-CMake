@@ -38,3 +38,7 @@
 
 // hit area must be as same as its related motion group name
 #define HIT_AREA_HEAD MOTION_GROUP_TAP_HEAD
+
+// model files
+#define MODEL_MOC_SUFFIX ".moc3"
+#define MODEL_JSON_SUFFIX ".model3.json"

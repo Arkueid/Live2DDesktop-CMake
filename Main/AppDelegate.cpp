@@ -53,8 +53,9 @@ void AppDelegate::Initialize()
         return;
     }
 
-    // TODO 初始化 _modelManager
+    // 初始化 _modelManager
     _modelManager = new ModelManager();
+    _modelManager->Initialize();
 
     // 初始化 _mouseActionManager
     _mouseActionManager = new MouseActionManager();

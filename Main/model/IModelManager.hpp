@@ -4,6 +4,8 @@
 class IModelManager
 {
 public:
+    virtual void Initialize() {}
+
     /// @brief 获取当前已加载的模型，若模型不存在则报错
     /// @return 返回模型
     virtual LAppModel *GetModel() = 0;

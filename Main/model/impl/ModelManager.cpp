@@ -5,6 +5,9 @@
 #include <CubismFramework.hpp>
 #include <utils/log/Log.hpp>
 #include <Default.hpp>
+#include <model/model_dir/ModelDirectory.hpp>
+
+#include <live2d/LAppPal.hpp>
 
 using namespace Csm;
 
@@ -22,6 +25,11 @@ ModelManager::~ModelManager()
     }
 }
 
+void ModelManager::Initialize()
+{
+    ModelDirectory::Initialize(Config::GetResourceDir().c_str());
+}
+
 LAppModel *ModelManager::GetModel()
 {
     assert(_currentModel != nullptr);
@@ -31,6 +39,15 @@ LAppModel *ModelManager::GetModel()
 
 void ModelManager::SetModel(const char *modelDir)
 {
+    std::string modelPath(Config::GetResourceDir());
+    modelPath += modelDir;
+
+    if (!ModelDirectory::IsModelDir(modelPath.c_str())) 
+    {
+        Error("'%s' is not a model directory", modelDir);
+        return;
+    }
+
     if (_currentModel != nullptr)
     {
         delete _currentModel;
@@ -39,12 +56,9 @@ void ModelManager::SetModel(const char *modelDir)
 
     _currentModel = new LAppModel();
 
-    std::string modelPath(Config::GetResourceDir());
-    modelPath += modelDir;
     modelPath.append("/");
-
     std::string modelJsonName(modelDir);
-    modelJsonName += ".model3.json";
+    modelJsonName += MODEL_JSON_SUFFIX;
 
     _currentModel->LoadAssets(modelPath.c_str(), modelJsonName.c_str());
 }

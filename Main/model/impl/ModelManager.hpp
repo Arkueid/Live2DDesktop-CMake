@@ -7,6 +7,8 @@ public:
     
     ~ModelManager();
 
+    void Initialize();
+
     LAppModel *GetModel();
 
     void SetModel(const char *modelDir);

@@ -102,11 +102,11 @@ if(${CMAKE_BUILD_TYPE} MATCHES "Release")
   set_target_properties(${APP_NAME} PROPERTIES
     WIN32_EXECUTABLE ON
   )
+  target_compile_definitions(${APP_NAME} PUBLIC APP_MODE_RELEASE)
 else()
   set_target_properties(${APP_NAME} PROPERTIES
     WIN32_EXECUTABLE OFF
   )
-  target_compile_definitions(${APP_NAME} PRIVATE APP_MODE_DEBUG)
 endif()
 
 # Add source files.

@@ -29,19 +29,14 @@ using namespace LAppDefine;
 namespace {
     csmByte* CreateBuffer(const csmChar* path, csmSizeInt* size)
     {
-        if (DebugLogEnable)
-        {
-            Info("create buffer: %s ", path);
-        }
+
+        Info("create buffer: %s ", path);
         return LAppPal::LoadFileAsBytes(path, size);
     }
 
     void DeleteBuffer(csmByte* buffer, const csmChar* path = "")
     {
-        if (DebugLogEnable)
-        {
-            Info("delete buffer: %s", path);
-        }
+        Info("delete buffer: %s", path);
         LAppPal::ReleaseBytes(buffer);
     }
 }
@@ -697,11 +692,11 @@ csmBool LAppModel::HasMocConsistencyFromFile(const csmChar* mocFileName)
     csmBool consistency = CubismMoc::HasMocConsistencyFromUnrevivedMoc(buffer, size);
     if (!consistency)
     {
-        CubismLogInfo("Inconsistent MOC3.");
+        Error("Inconsistent MOC3.");
     }
     else
     {
-        CubismLogInfo("Consistent MOC3.");
+        Info("Consistent MOC3.");
     }
 
     DeleteBuffer(buffer);
