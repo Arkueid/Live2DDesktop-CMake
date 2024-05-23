@@ -43,7 +43,9 @@ void AppDelegate::Initialize()
 {
     // 只能调用一次
     assert(_scene == nullptr);
+    assert(_trayIcon == nullptr);
     assert(_modelManager == nullptr);
+    assert(_matrixManager == nullptr);
 
     if (!Config::Initialize())
     {
